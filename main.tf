@@ -1,11 +1,38 @@
 /**
  * ## Usage
  *
- * Creates a KMS key for DNSSEC
+ * Creates a KMS key for DNSSEC. Must be in us-east-1.
+ *
+ * Read the more about [Working with customer managed CMKs for DNSSEC](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-cmk-requirements.html)
+ *
+ * Using directly (assuming in us-east-1):
  *
  * ```hcl
  * module "dnssec_kms_key" {
  *   source = "dod-iac/dnssec-kms-key/aws"
+ *
+ *   tags = {
+ *     Application = var.application
+ *     Environment = var.environment
+ *     Automation  = "Terraform"
+ *   }
+ * }
+ * ```
+ *
+ * If you need to set a separate provider for the us-east-1 region:
+ *
+ * ```hcl
+ * provider "aws" {
+ *   alias   = "us-east-1"
+ *   region  = "us-east-1"
+ * }
+ *
+ * module "dnssec_kms_key" {
+ *   source = "dod-iac/dnssec-kms-key/aws"
+ *
+ *   providers = {
+ *     aws = aws.us-east-1
+ *   }
  *
  *   tags = {
  *     Application = var.application
@@ -76,7 +103,7 @@ data "aws_iam_policy_document" "dnssec" {
   }
 
   statement {
-    sid     = "Enable IAM User Permissions"
+    sid = "Enable IAM User Permissions"
     actions = [
       "kms:*",
     ]
@@ -100,7 +127,6 @@ resource "aws_kms_key" "dnssec" {
   deletion_window_in_days = var.key_deletion_window_in_days
 
   # DO NOT CHANGE THESE SETTINGS
-  # https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-cmk-requirements.html
   customer_master_key_spec = "ECC_NIST_P256"
   key_usage                = "SIGN_VERIFY"
 
