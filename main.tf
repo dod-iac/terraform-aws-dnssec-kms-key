@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "dnssec" {
   }
 
   statement {
-    sid = "Allow Route 53 DNSSEC to CreateGrant"
+    sid    = "Allow Route 53 DNSSEC to CreateGrant"
     effect = "Allow"
     actions = [
       "kms:CreateGrant",
@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "dnssec" {
     }
     resources = ["*"]
     condition {
-      test = "Bool"
+      test     = "Bool"
       variable = "kms:GrantIsForAWSResource"
       values = [
         true,
