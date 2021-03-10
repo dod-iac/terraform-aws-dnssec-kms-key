@@ -1,10 +1,37 @@
 ## Usage
 
-Creates a KMS key for DNSSEC
+Creates a KMS key for DNSSEC. Must be in us-east-1.
+
+Read the more about [Working with customer managed CMKs for DNSSEC](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-cmk-requirements.html)
+
+Using directly (assuming in us-east-1):
 
 ```hcl
 module "dnssec_kms_key" {
   source = "dod-iac/dnssec-kms-key/aws"
+
+  tags = {
+    Application = var.application
+    Environment = var.environment
+    Automation  = "Terraform"
+  }
+}
+```
+
+If you need to set a separate provider for the us-east-1 region:
+
+```hcl
+provider "aws" {
+  alias   = "us-east-1"
+  region  = "us-east-1"
+}
+
+module "dnssec_kms_key" {
+  source = "dod-iac/dnssec-kms-key/aws"
+
+  providers = {
+    aws = aws.us-east-1
+  }
 
   tags = {
     Application = var.application
