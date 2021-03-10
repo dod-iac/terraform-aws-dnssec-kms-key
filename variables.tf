@@ -13,7 +13,7 @@ variable "key_deletion_window_in_days" {
 variable "name" {
   type        = string
   description = "The display name of the alias. The name must start with the word \"alias\" followed by a forward slash (alias/)."
-  default     = "alias/ecr"
+  default     = "alias/dnssec"
 }
 
 variable "tags" {
