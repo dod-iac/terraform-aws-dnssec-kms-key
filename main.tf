@@ -76,12 +76,11 @@ data "aws_iam_policy_document" "dnssec" {
   }
 
   statement {
-    sid    = "IAM User Permissions"
-    effect = "Allow"
+    sid     = "Enable IAM User Permissions"
     actions = [
       "kms:*",
     ]
-    resources = ["*"]
+    effect = "Allow"
     principals {
       type = "AWS"
       identifiers = [
@@ -92,13 +91,13 @@ data "aws_iam_policy_document" "dnssec" {
         )
       ]
     }
+    resources = ["*"]
   }
 }
 
 resource "aws_kms_key" "dnssec" {
   description             = var.description
   deletion_window_in_days = var.key_deletion_window_in_days
-  enable_key_rotation     = "true"
 
   # DO NOT CHANGE THESE SETTINGS
   # https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-cmk-requirements.html
@@ -106,8 +105,7 @@ resource "aws_kms_key" "dnssec" {
   key_usage                = "SIGN_VERIFY"
 
   policy = data.aws_iam_policy_document.dnssec.json
-
-  tags = var.tags
+  tags   = var.tags
 }
 
 resource "aws_kms_alias" "dnssec" {
